@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "rootDir": "./src",
     "outDir": "./dist",
 
@@ -8,6 +9,11 @@
     "target": "ES2022",
     "lib": ["ES2022"],
     "types": ["node"],
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
 
     "strict": true,
     "noUncheckedIndexedAccess": true,
