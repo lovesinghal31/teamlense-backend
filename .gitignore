@@ -37,3 +37,4 @@ coverage/
 
 # certificates
 *.pem
+/src/generated/prisma
