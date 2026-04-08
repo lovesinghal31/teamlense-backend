@@ -1,7 +1,7 @@
 import "dotenv/config";
 import jwt from "jsonwebtoken";
 import { UserRepository } from "@/repositories/user.repositories.js";
-import { hashPassword, comparePassword } from "@/lib/bcrypt.js";
+import { PasswordUtil } from "@/lib/bcrypt.js";
 import { generateAccessAndRefreshTokens } from "@/lib/utlis.js";
 import { ApiError } from "@/lib/utlis.js";
 import { IRefreshTokenPayload } from "@/types/user.js";
@@ -11,6 +11,7 @@ if (!process.env.REFRESH_TOKEN_SECRET) {
 }
 
 const userRepository = new UserRepository();
+const passwordUtil = new PasswordUtil();
 
 export class UserService {
   async register(
@@ -23,7 +24,7 @@ export class UserService {
     if (existingUser) {
       throw new ApiError(400, "Email already in use");
     }
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await passwordUtil.hashPassword(password);
     const user = await userRepository.createUser(
       name,
       email,
@@ -38,7 +39,10 @@ export class UserService {
     if (!user) {
       throw new ApiError(400, "Invalid email or password");
     }
-    const isPasswordValid = await comparePassword(password, user.password);
+    const isPasswordValid = await passwordUtil.comparePassword(
+      password,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw new ApiError(400, "Invalid email or password");
     }

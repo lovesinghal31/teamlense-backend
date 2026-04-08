@@ -1,16 +1,18 @@
 import { TeamRepository } from "@/repositories/team.repositories.js";
 import { TeamMemberRepository } from "@/repositories/teammember.repositories.js";
 import { ApiError } from "@/lib/utlis.js";
-import { generateInviteCode } from "@/lib/crypto.js";
+import { CryptoUtil } from "@/lib/crypto.js";
 import { UserRepository } from "@/repositories/user.repositories.js";
 
 const teamRepository = new TeamRepository();
 const teamMemberRepository = new TeamMemberRepository();
-const userRepository = new UserRepository();
-
+const cryptoUtil = new CryptoUtil();
 export class TeamService {
   async createTeam(name: string, leadId: string) {
-    const inviteCode = generateInviteCode({ teamName: name, leadId });
+    const inviteCode = cryptoUtil.generateInviteCode({
+      teamName: name,
+      leadId,
+    });
     const team = await teamRepository.createTeam(name, inviteCode, leadId);
     const teamMember = await teamMemberRepository.addMember(
       team.id,
