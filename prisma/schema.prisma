@@ -8,10 +8,47 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  name String
-  email String @unique
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
   password String
-  skills String
+  skills   String
+
+  team_members TeamMember[]
+  teams_led    Team[]       @relation("TeamLead")
+
   created_at DateTime @default(now())
+}
+
+model Team {
+  id          String @id @default(uuid())
+  name        String
+  invite_code String @unique
+  lead_id     String
+
+  lead         User         @relation("TeamLead", fields: [lead_id], references: [id])
+  team_members TeamMember[]
+
+  created_at DateTime @default(now())
+
+  @@unique([name, lead_id])
+}
+
+model TeamMember {
+  id      String @id @default(uuid())
+  user_id String
+  team_id String
+  role    Role   @default(MEMBER)
+
+  user User @relation(fields: [user_id], references: [id])
+  team Team @relation(fields: [team_id], references: [id])
+
+  created_at DateTime @default(now())
+
+  @@unique([user_id, team_id])
+}
+
+enum Role {
+  ADMIN
+  MEMBER
 }
