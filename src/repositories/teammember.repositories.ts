@@ -21,6 +21,8 @@ export class TeamMemberRepository {
     return await prisma.teamMember.findMany({
       where: { user_id: userId },
       select: {
+        id: true,
+        user_id: true,
         team: {
           select: {
             id: true,
@@ -32,7 +34,14 @@ export class TeamMemberRepository {
       },
     });
   }
-
+  async findByTeamIdAndUserId(teamId: string, userId: string) {
+    return await prisma.teamMember.findFirst({
+      where: {
+        team_id: teamId,
+        user_id: userId,
+      },
+    });
+  }
   async addMember(teamId: string, userId: string, role?: Role) {
     return await prisma.teamMember.create({
       data: {

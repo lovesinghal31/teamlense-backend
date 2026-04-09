@@ -15,6 +15,7 @@ if (!process.env.CORS_ORIGIN) {
 // router imports
 import userRouter from "@/routes/user.route.js";
 import teamRouter from "@/routes/team.route.js";
+import taskRouter from "@/routes/task.route.js";
 
 const app = express();
 app.set("trust proxy", 1);
@@ -32,6 +33,7 @@ app.use(cookieParser());
 // routes
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/team", teamRouter);
+app.use("/api/v1/task", taskRouter);
 
 app.get("/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "ok" });
