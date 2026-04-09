@@ -2,7 +2,6 @@ import { TeamRepository } from "@/repositories/team.repositories.js";
 import { TeamMemberRepository } from "@/repositories/teammember.repositories.js";
 import { ApiError } from "@/lib/utlis.js";
 import { CryptoUtil } from "@/lib/crypto.js";
-import { UserRepository } from "@/repositories/user.repositories.js";
 
 const teamRepository = new TeamRepository();
 const teamMemberRepository = new TeamMemberRepository();
@@ -14,7 +13,7 @@ export class TeamService {
       leadId,
     });
     const team = await teamRepository.createTeam(name, inviteCode, leadId);
-    const teamMember = await teamMemberRepository.addMember(
+    await teamMemberRepository.addMember(
       team.id,
       leadId,
       "ADMIN",
@@ -26,7 +25,7 @@ export class TeamService {
     if (!team) {
       throw new ApiError(404, "Team not found");
     }
-    const member = await teamMemberRepository.addMember(team.id, userId);
+    await teamMemberRepository.addMember(team.id, userId);
     return team;
   }
   async getTeamsByUserId(userId: string) {

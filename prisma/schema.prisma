@@ -28,6 +28,7 @@ model Team {
 
   lead         User         @relation("TeamLead", fields: [lead_id], references: [id])
   team_members TeamMember[]
+  tasks        Task[]
 
   created_at DateTime @default(now())
 
@@ -43,6 +44,9 @@ model TeamMember {
   user User @relation(fields: [user_id], references: [id])
   team Team @relation(fields: [team_id], references: [id])
 
+  assigned_tasks Task[] @relation("TaskAssignedTo")
+  created_tasks  Task[] @relation("TaskCreatedBy")
+
   created_at DateTime @default(now())
 
   @@unique([user_id, team_id])
@@ -51,4 +55,29 @@ model TeamMember {
 enum Role {
   ADMIN
   MEMBER
+}
+
+model Task {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus @default(TODO)
+  deadline    DateTime?
+
+  team_id String
+  team    Team   @relation(fields: [team_id], references: [id])
+
+  assigned_to_id String
+  assigned_to    TeamMember @relation("TaskAssignedTo", fields: [assigned_to_id], references: [id])
+
+  created_by_id String
+  created_by    TeamMember @relation("TaskCreatedBy", fields: [created_by_id], references: [id])
+
+  created_at DateTime @default(now())
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
 }
