@@ -7,7 +7,7 @@ import {
   joinTeamSchema,
   teamIdParamSchema,
 } from "@/lib/schema/team-schema.js";
-import { ITeam, ITeamMember } from "@/types/team.js";
+import { ITeam, ITeamMember, ITeamMemberWithUser } from "@/types/team.js";
 import { IUser } from "@/types/user.js";
 
 const teamService = new TeamService();
@@ -97,7 +97,7 @@ const getTeamMembers = async (
     return res
       .status(200)
       .json(
-        new ApiResponse<IUser[]>(
+        new ApiResponse<ITeamMemberWithUser[]>(
           true,
           "Team members retrieved successfully",
           members,

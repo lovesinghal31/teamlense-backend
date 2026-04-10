@@ -13,11 +13,7 @@ export class TeamService {
       leadId,
     });
     const team = await teamRepository.createTeam(name, inviteCode, leadId);
-    await teamMemberRepository.addMember(
-      team.id,
-      leadId,
-      "ADMIN",
-    );
+    await teamMemberRepository.addMember(team.id, leadId, "ADMIN");
     return team;
   }
   async joinTeam(inviteCode: string, userId: string) {
@@ -34,7 +30,7 @@ export class TeamService {
   }
   async getTeamMembers(teamId: string) {
     const members = await teamMemberRepository.findByTeamId(teamId);
-    return members.map((m) => m.user);
+    return members.map((m) => m);
   }
   async addMember(teamId: string, userId: string, memberId: string) {
     const team = await teamRepository.findById(teamId);

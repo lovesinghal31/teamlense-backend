@@ -29,6 +29,7 @@ model Team {
   lead         User         @relation("TeamLead", fields: [lead_id], references: [id])
   team_members TeamMember[]
   tasks        Task[]
+  meetings     Meeting[]
 
   created_at DateTime @default(now())
 
@@ -44,10 +45,12 @@ model TeamMember {
   user User @relation(fields: [user_id], references: [id])
   team Team @relation(fields: [team_id], references: [id])
 
-  assigned_tasks Task[] @relation("TaskAssignedTo")
-  created_tasks  Task[] @relation("TaskCreatedBy")
+  assigned_tasks   Task[]    @relation("TaskAssignedTo")
+  created_tasks    Task[]    @relation("TaskCreatedBy")
+  created_meetings Meeting[] @relation("MeetingCreatedBy")
 
-  created_at DateTime @default(now())
+  created_at          DateTime             @default(now())
+  meetingParticipants MeetingParticipant[] @relation("TeamMemberParticipants")
 
   @@unique([user_id, team_id])
 }
@@ -80,4 +83,48 @@ enum TaskStatus {
   TODO
   IN_PROGRESS
   DONE
+}
+
+model Meeting {
+  id     String  @id @default(uuid())
+  title  String
+  agenda String
+
+  team_id String
+  team    Team   @relation(fields: [team_id], references: [id])
+
+  created_by_id String
+  created_by    TeamMember @relation("MeetingCreatedBy", fields: [created_by_id], references: [id])
+
+  start_time DateTime
+  end_time   DateTime
+
+  status MeetingStatus @default(SCHEDULED)
+
+  participants MeetingParticipant[] @relation("MeetingParticipants")
+
+  transcript String?
+  summary    Json?
+
+  created_at DateTime @default(now())
+}
+
+model MeetingParticipant {
+  id             String @id @default(uuid())
+  meeting_id     String
+  team_member_id String
+
+  meeting     Meeting    @relation("MeetingParticipants", fields: [meeting_id], references: [id])
+  team_member TeamMember @relation("TeamMemberParticipants", fields: [team_member_id], references: [id])
+
+  created_at DateTime @default(now())
+
+  @@unique([meeting_id, team_member_id])
+}
+
+enum MeetingStatus {
+  SCHEDULED
+  ONGOING
+  COMPLETED
+  CANCELLED
 }
