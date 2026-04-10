@@ -2,10 +2,25 @@ import { Role } from "@/generated/prisma/enums.js";
 import { prisma } from "@/lib/prisma.js";
 
 export class TeamMemberRepository {
+  async findById(id: string) {
+    return await prisma.teamMember.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        team_id: true,
+        user_id: true,
+        role: true,
+      },
+    });
+  }
   async findByTeamId(teamId: string) {
     return await prisma.teamMember.findMany({
       where: { team_id: teamId },
       select: {
+        id: true,
+        team_id: true,
+        user_id: true,
+        role: true,
         user: {
           select: {
             id: true,
