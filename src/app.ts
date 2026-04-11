@@ -17,6 +17,7 @@ import userRouter from "@/routes/user.route.js";
 import teamRouter from "@/routes/team.route.js";
 import taskRouter from "@/routes/task.route.js";
 import meetingRouter from "@/routes/meeting.route.js";
+import chatRouter from "@/routes/chat.route.js";
 
 const app = express();
 app.set("trust proxy", 1);
@@ -36,6 +37,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/team", teamRouter);
 app.use("/api/v1/task", taskRouter);
 app.use("/api/v1/meeting", meetingRouter);
+app.use("/api/v1/chat", chatRouter);
 
 app.get("/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "ok" });

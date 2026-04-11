@@ -30,6 +30,7 @@ model Team {
   team_members TeamMember[]
   tasks        Task[]
   meetings     Meeting[]
+  messages     Message[]
 
   created_at DateTime @default(now())
 
@@ -51,6 +52,7 @@ model TeamMember {
 
   created_at          DateTime             @default(now())
   meetingParticipants MeetingParticipant[] @relation("TeamMemberParticipants")
+  messageSender       Message[]            @relation("MessageSender")
 
   @@unique([user_id, team_id])
 }
@@ -86,7 +88,7 @@ enum TaskStatus {
 }
 
 model Meeting {
-  id     String  @id @default(uuid())
+  id     String @id @default(uuid())
   title  String
   agenda String
 
@@ -127,4 +129,24 @@ enum MeetingStatus {
   ONGOING
   COMPLETED
   CANCELLED
+}
+
+model Message {
+  id      String @id @default(uuid())
+  content String
+
+  sender_member_id String
+  sender_member    TeamMember @relation("MessageSender", fields: [sender_member_id], references: [id])
+
+  team_id String
+  team    Team   @relation(fields: [team_id], references: [id])
+
+  type MessageType @default(TEXT)
+
+  created_at DateTime @default(now())
+}
+
+enum MessageType {
+  TEXT
+  COMMAND
 }
