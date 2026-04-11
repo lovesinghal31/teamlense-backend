@@ -33,7 +33,10 @@ export class TaskService {
       assignedToId,
     );
     if (!assignedUser) {
-      throw new ApiError(400, "Assigned user not found or not a member of the team");
+      throw new ApiError(
+        400,
+        "Assigned user not found or not a member of the team",
+      );
     }
     const task = await taskRepository.createTask(
       title,
